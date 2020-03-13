@@ -9,7 +9,7 @@ ExeFilePath = "#{ExeFileDir}/#{ProjectName}.exe"
 IncludeDirs = %w(/usr/local/boost_1_72_0/)
 
 Cxx = 'clang++'
-Flags = '-Wall -O0 -DNDEBUG -std=c++2a -lbcm_host'
+Flags = '-Wall -O0 -DNDEBUG -std=c++2a -I/opt/vc/include -L/opt/vc/lib -lbcm_host'
 
 task :default => ['build']
 
