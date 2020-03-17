@@ -36,14 +36,14 @@ end
 desc "build exe file to all"
 task :build do |task, args|
   Rake::Task['build:clean'].execute
-  Rake::Task['build:obj'].execute(args)
-  Rake::Task['build:exe'].execute
+  Rake::Task['build:compile'].execute(args)
+  Rake::Task['build:link'].execute
 end
 
 namespace :build do
 
   desc "build obj file"
-  task :obj do |task, args|
+  task :compile do |task, args|
 
     FileUtils.mkdir_p(ObjFilesDir) unless Dir.exists?(ObjFilesDir)
 
