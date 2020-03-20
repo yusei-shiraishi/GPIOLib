@@ -11,7 +11,7 @@ class Gpio {
     enum struct FunctionSelect {
       IN  = 0b000,
       OUT = 0b001
-    }
+    };
 
     // Enter the GPIO pin number for the first argument 'pin'.
     // It has nothing to do with the number on the board.
@@ -29,6 +29,6 @@ class Gpio {
     volatile unsigned int* addr;
 
     bool validate_pin(int pin);
-}
+};
 
 #endif
