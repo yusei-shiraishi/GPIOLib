@@ -21,7 +21,7 @@ class Gpio {
     FunctionSelect get_pin(int pin);
 
   private:
-    static const int PeripheralAddr = bcm_host_get_peripheral_address();
+    static const int PeripheralAddr;
     static const size_t PeripheralSize = 5;
 
     int memory_fd;

@@ -1,8 +1,13 @@
 #include "gpio.hpp"
+#include <fcntl.h>
+#include <cstdio>
+#include <sys/mman.h>
+
+const int Gpio::PeripheralAddr = bcm_host_get_peripheral_address();
 
 Gpio::Gpio() {
   memory_fd = open("/dev/mem", O_RDWR|O_SYNC);
-  if(gpio->memory_fd < 0) {
+  if(memory_fd < 0) {
     perror("Failed to open /dev/mem");
 		return;
   }
@@ -20,13 +25,13 @@ Gpio::Gpio() {
 Gpio::~Gpio() {
 }
 
-int Gpio::set_pin(int pin, FunctionSelect fsel) {
+int Gpio::set_pin(int pin, Gpio::FunctionSelect fsel) {
   if (!validate_pin(pin)){
     perror("gg");
   }
 }
 
-FunctionSelect Gpio::get_pin(int pin) {
+Gpio::FunctionSelect Gpio::get_pin(int pin) {
   if (!validate_pin(pin)){
     perror("gg");
   }
