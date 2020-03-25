@@ -1,23 +1,23 @@
 #include "gpio.hpp"
-#include <fcntl.h>
 #include <cstdio>
+#include <fcntl.h>
 #include <sys/mman.h>
 
 const int Gpio::PeripheralAddr = bcm_host_get_peripheral_address();
 
 Gpio::Gpio() {
-  memory_fd = open("/dev/mem", O_RDWR|O_SYNC);
-  if(memory_fd < 0) {
+  m_memory_fd = open("/dev/mem", O_RDWR|O_SYNC);
+  if(m_memory_fd < 0) {
     perror("Failed to open /dev/mem");
 		return;
   }
 
-  map = mmap(
+  m_map = mmap(
     NULL,
     PeripheralSize,
     PROT_READ|PROT_WRITE,
     MAP_SHARED,
-    memory_fd,
+    m_memory_fd,
     PeripheralAddr
   );
 }
@@ -39,7 +39,6 @@ Gpio::FunctionSelect Gpio::get_pin(int pin) {
 
   return FunctionSelect::IN;
 }
-
 
 bool Gpio::validate_pin(int pin) {
   return true;

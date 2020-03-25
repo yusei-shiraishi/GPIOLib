@@ -24,9 +24,9 @@ class Gpio {
     static const int PeripheralAddr;
     static const size_t PeripheralSize = 5;
 
-    int memory_fd;
-    void* map;
-    volatile unsigned int* addr;
+    int m_memoryFd;
+    void* m_map;
+    volatile unsigned int* m_addr;
 
     bool validate_pin(int pin);
 };
