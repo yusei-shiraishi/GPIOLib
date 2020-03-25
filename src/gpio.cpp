@@ -29,10 +29,18 @@ int Gpio::set_pin(int pin, Gpio::FunctionSelect fsel) {
   if (!validate_pin(pin)){
     perror("gg");
   }
+  return 0;
 }
 
 Gpio::FunctionSelect Gpio::get_pin(int pin) {
   if (!validate_pin(pin)){
     perror("gg");
   }
+
+  return FunctionSelect::IN;
+}
+
+
+bool Gpio::validate_pin(int pin) {
+  return true;
 }
