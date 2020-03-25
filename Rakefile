@@ -61,7 +61,7 @@ namespace :build do
   end
 
   desc "build exe file"
-  task :exe do
+  task :link do
     FileUtils.mkdir_p(ExeFileDir) unless Dir.exists?(ExeFileDir)
     obj_files = get_match_files_recursion(ObjFilesDir){|f| File.fnmatch("*.o", f)}.join(' ')
     sh "#{Cxx} #{Flags} -o #{ExeFilePath} #{obj_files}"
