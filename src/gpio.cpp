@@ -6,8 +6,8 @@
 const int Gpio::PeripheralAddr = bcm_host_get_peripheral_address();
 
 Gpio::Gpio() {
-  m_memory_fd = open("/dev/mem", O_RDWR|O_SYNC);
-  if(m_memory_fd < 0) {
+  m_memoryFd = open("/dev/mem", O_RDWR|O_SYNC);
+  if(m_memoryFd < 0) {
     perror("Failed to open /dev/mem");
 		return;
   }
@@ -17,7 +17,7 @@ Gpio::Gpio() {
     PeripheralSize,
     PROT_READ|PROT_WRITE,
     MAP_SHARED,
-    m_memory_fd,
+    m_memoryFd,
     PeripheralAddr
   );
 }
