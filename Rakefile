@@ -6,15 +6,15 @@ BUILD_DIR         = "#{PROJECT_HOME}/build"
 EXE_FILE_DIR      = "#{BUILD_DIR}/exe"
 OBJ_FILES_DIR     = "#{BUILD_DIR}/objects"
 EXE_FILE_PATH     = "#{EXE_FILE_DIR}/#{PROJECT_NAME}"
-INCLUDE_DIRS      = %w(/usr/local/boost_1_72_0/ /opt/vc/include)
-LIB_DIRS          = %w(/opt/vc/lib)
+INCLUDE_DIRS      = %w(/usr/local/boost_1_72_0/ /opt/vc/include).map{|i_dir| "-I#{i_dir}"}.join(' ')
+LIB_DIRS          = %w(/opt/vc/lib).map{|l_dir| "-L#{l_dir}"}.join(' ')
 COMPILE_COMMANDS   = {
   cpp: ->(build_path, target_file) {
-    "clang++ -Wall -O0 -DNDEBUG -std=c++2a -lbcm_host #{LIB_DIRS.map{|l_dir| "-L#{l_dir}"}.join(' ')} #{INCLUDE_DIRS.map{|i_dir| "-I#{i_dir}"}.join(' ')} -o #{build_path}.o -c #{target_file}"
+    "clang++ -Wall -O0 -DNDEBUG -std=c++2a -lbcm_host #{LIB_DIRS} #{INCLUDE_DIRS} -o #{build_path}.o -c #{target_file}"
   }
 }
 LINK_COMMAND     = 'clang++'
-LINK_FLAGS       = '-Wall -O0 -DNDEBUG -std=c++2a -I/opt/vc/include -L/opt/vc/lib -lbcm_host'
+LINK_FLAGS       = "-Wall -O0 -DNDEBUG -std=c++2a #{LIB_DIRS} #{INCLUDE_DIRS} -lbcm_host"
 
 task :default => ['build']
 
