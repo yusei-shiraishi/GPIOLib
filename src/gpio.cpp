@@ -23,12 +23,16 @@ Gpio::Gpio() {
 }
 
 Gpio::~Gpio() {
+  munmap(m_map, PeripheralSize);
+  close(m_memoryFd);
 }
 
 int Gpio::set_pin(int pin, Gpio::FunctionSelect fsel) {
   if (!validate_pin(pin)){
     perror("gg");
   }
+
+  *(m_addr + (pin/10)) = fsel << 3*(pin%10);
   return 0;
 }
 

@@ -1,0 +1,26 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/db4357d/
+FunctionSelect	src/gpio.hpp	/^    enum struct FunctionSelect {$/;"	g	class:Gpio
+GPIO_HPP	src/gpio.hpp	/^#define GPIO_HPP$/;"	d
+Gpio	src/gpio.cpp	/^Gpio::Gpio() {$/;"	f	class:Gpio
+Gpio	src/gpio.hpp	/^class Gpio {$/;"	c
+IN	src/gpio.hpp	/^      IN  = 0b000,$/;"	e	enum:Gpio::FunctionSelect
+OUT	src/gpio.hpp	/^      OUT = 0b001$/;"	e	enum:Gpio::FunctionSelect
+PeripheralAddr	src/gpio.cpp	/^const int Gpio::PeripheralAddr = bcm_host_get_peripheral_address();$/;"	m	class:Gpio	typeref:typename:const int
+PeripheralAddr	src/gpio.hpp	/^    static const int PeripheralAddr;$/;"	m	class:Gpio	typeref:typename:const int
+PeripheralSize	src/gpio.hpp	/^    static const size_t PeripheralSize = 5;$/;"	m	class:Gpio	typeref:typename:const size_t
+get_pin	src/gpio.cpp	/^Gpio::FunctionSelect Gpio::get_pin(int pin) {$/;"	f	class:Gpio	typeref:typename:Gpio::FunctionSelect
+m_addr	src/gpio.hpp	/^    volatile unsigned int* m_addr;$/;"	m	class:Gpio	typeref:typename:volatile unsigned int *
+m_map	src/gpio.hpp	/^    void* m_map;$/;"	m	class:Gpio	typeref:typename:void *
+m_memoryFd	src/gpio.hpp	/^    int m_memoryFd;$/;"	m	class:Gpio	typeref:typename:int
+main	src/main.cpp	/^int main(){$/;"	f	typeref:typename:int
+set_pin	src/gpio.cpp	/^int Gpio::set_pin(int pin, Gpio::FunctionSelect fsel) {$/;"	f	class:Gpio	typeref:typename:int
+smart_home	README.md	/^# smart_home$/;"	c
+validate_pin	src/gpio.cpp	/^bool Gpio::validate_pin(int pin) {$/;"	f	class:Gpio	typeref:typename:bool
+~Gpio	src/gpio.cpp	/^Gpio::~Gpio() {$/;"	f	class:Gpio
