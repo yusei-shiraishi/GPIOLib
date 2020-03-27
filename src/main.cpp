@@ -3,7 +3,7 @@
 #include "gpio.hpp"
 
 int main(){
-  Gpio gpio = new Gpio();
+  Gpio* gpio = new Gpio();
 
   printf("create gpio");
   return 0;

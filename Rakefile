@@ -1,15 +1,20 @@
 
-ProjectHome = File.expand_path(File.dirname(__FILE__))
-ProjectName = "smart_home"
-SrcDir = "#{ProjectHome}/src"
-BuildDir = "#{ProjectHome}/build"
-ExeFileDir = "#{BuildDir}/exe"
-ObjFilesDir = "#{BuildDir}/objects"
-ExeFilePath = "#{ExeFileDir}/#{ProjectName}.exe"
-IncludeDirs = %w(/usr/local/boost_1_72_0/)
-
-Cxx = 'clang++'
-Flags = '-Wall -O0 -DNDEBUG -std=c++2a -I/opt/vc/include -L/opt/vc/lib -lbcm_host'
+PROJECT_HOME      = File.expand_path(File.dirname(__FILE__))
+PROJECT_NAME      = "smart_home"
+SRC_DIR           = "#{PROJECT_HOME}/src"
+BUILD_DIR         = "#{PROJECT_HOME}/build"
+EXE_FILE_DIR      = "#{BUILD_DIR}/exe"
+OBJ_FILES_DIR     = "#{BUILD_DIR}/objects"
+EXE_FILE_PATH     = "#{EXE_FILE_DIR}/#{PROJECT_NAME}"
+INCLUDE_DIRS      = %w(/usr/local/boost_1_72_0/ /opt/vc/include)
+LIB_DIRS          = %w(/opt/vc/lib)
+COMPILE_COMMANDS   = {
+  cpp: ->(build_path, target_file) {
+    "clang++ -Wall -O0 -DNDEBUG -std=c++2a -lbcm_host #{LIB_DIRS.map{|l_dir| "-L#{l_dir}"}.join(' ')} #{INCLUDE_DIRS.map{|i_dir| "-I#{i_dir}"}.join(' ')} -o #{build_path}.o -c #{target_file}"
+  }
+}
+LINK_COMMAND     = 'clang++'
+LINK_FLAGS       = '-Wall -O0 -DNDEBUG -std=c++2a -I/opt/vc/include -L/opt/vc/lib -lbcm_host'
 
 task :default => ['build']
 
@@ -42,33 +47,35 @@ end
 
 namespace :build do
 
-  desc "build obj file"
+  desc "compile"
   task :compile do |task, args|
 
-    FileUtils.mkdir_p(ObjFilesDir) unless Dir.exists?(ObjFilesDir)
+    FileUtils.mkdir_p(OBJ_FILES_DIR) unless Dir.exists?(OBJ_FILES_DIR)
 
-    func = ->(f){ File.fnmatch("*.cpp", f) }
-    if args['all'].nil? || !!!args['all']
-      #todo timestamp で差分のみ
-    end
+    COMPILE_COMMANDS.each do |suffix, command|
+      func = ->(f){ File.fnmatch("*.#{suffix}", f) }
+      target_files = get_match_files_recursion(SRC_DIR, &func)
 
-    cpp_files = get_match_files_recursion(SrcDir, &func)
+      if args['all'].nil? || !!!args['all']
+        #todo timestamp で差分のみ
+      end
 
-    cpp_files.each do |f|
-      target = File.basename(f, '.cpp')
-      sh "#{Cxx} #{Flags} -idirafter #{IncludeDirs.join(' ')} -o #{ObjFilesDir}/#{target}.o -c #{f}"
+      target_files.each do |target|
+        basename = File.basename(target, "#{suffix}")
+        sh command.call("#{OBJ_FILES_DIR}/#{basename}", target)
+      end
     end
   end
 
-  desc "build exe file"
+  desc "link"
   task :link do
-    FileUtils.mkdir_p(ExeFileDir) unless Dir.exists?(ExeFileDir)
-    obj_files = get_match_files_recursion(ObjFilesDir){|f| File.fnmatch("*.o", f)}.join(' ')
-    sh "#{Cxx} #{Flags} -o #{ExeFilePath} #{obj_files}"
+    FileUtils.mkdir_p(EXE_FILE_DIR) unless Dir.exists?(EXE_FILE_DIR)
+    obj_files = get_match_files_recursion(OBJ_FILES_DIR){|f| File.fnmatch("*.o", f)}.join(' ')
+    sh "#{LINK_COMMAND} #{LINK_FLAGS} -o #{EXE_FILE_PATH} #{obj_files}"
   end
 
   desc "rm build dir"
   task :clean do
-    sh "rm -r #{BuildDir}" if Dir.exists?(BuildDir)
+    sh "rm -r #{BUILD_DIR}" if Dir.exists?(BUILD_DIR)
   end
 end
