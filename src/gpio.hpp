@@ -26,7 +26,7 @@ class Gpio {
 
     int m_memoryFd;
     void* m_map;
-    volatile unsigned int* m_addr;
+    volatile unsigned short* m_addr;
 
     bool validate_pin(int pin);
 };

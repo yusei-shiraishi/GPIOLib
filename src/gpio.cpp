@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <iostream>
 
 const int Gpio::PeripheralAddr = bcm_host_get_peripheral_address();
 
@@ -21,11 +22,12 @@ Gpio::Gpio() {
     PeripheralAddr
   );
 
-  m_addr = (volatile unsigned int*)m_map;
+  m_addr = (volatile unsigned short*)m_map;
 }
 
 Gpio::~Gpio() {
   munmap(m_map, PeripheralSize);
+  m_addr = nullptr;
   close(m_memoryFd);
 }
 
@@ -34,9 +36,14 @@ int Gpio::set_pin(int pin, Gpio::FunctionSelect fsel) {
     perror("gg");
   }
 
-  perror("yea");
+  std::cout << "pin_num:" << pin << std::endl;
+  std::cout << "addr:" << m_addr + (pin/10) << std::endl;
+  std::cout << "val:" << (short)fsel << 3*(pin%10) << std::endl;
+  std::cout << "current_val:" << std::hex << *(m_addr + (pin/10)) << std::endl;
 
   *(m_addr + (pin/10)) = (short)fsel << 3*(pin%10);
+
+  std::cout << "after_val:" << std::hex << *(m_addr + (pin/10)) << std::endl;
   return 0;
 }
 
