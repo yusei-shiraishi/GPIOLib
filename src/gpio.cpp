@@ -32,7 +32,7 @@ int Gpio::set_pin(int pin, Gpio::FunctionSelect fsel) {
     perror("gg");
   }
 
-  *(m_addr + (pin/10)) = fsel << 3*(pin%10);
+  *(m_addr + (pin/10)) = (short)fsel << 3*(pin%10);
   return 0;
 }
 

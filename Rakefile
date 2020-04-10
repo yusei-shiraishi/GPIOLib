@@ -1,4 +1,3 @@
-
 PROJECT_HOME      = File.expand_path(File.dirname(__FILE__))
 PROJECT_NAME      = "smart_home"
 SRC_DIR           = "#{PROJECT_HOME}/src"
@@ -10,11 +9,13 @@ INCLUDE_DIRS      = %w(/usr/local/boost_1_72_0/ /opt/vc/include).map{|i_dir| "-I
 LIB_DIRS          = %w(/opt/vc/lib).map{|l_dir| "-L#{l_dir}"}.join(' ')
 COMPILE_COMMANDS   = {
   cpp: ->(build_path, target_file) {
-    "clang++ -Wall -O0 -DNDEBUG -std=c++2a -lbcm_host #{LIB_DIRS} #{INCLUDE_DIRS} -o #{build_path}.o -c #{target_file}"
+    #"/home/vagrant/projects/raspi/tools/arm-bcm2708/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -Wall -O0 -DNDEBUG -std=c++14 -lbcm_host #{INCLUDE_DIRS} -o #{build_path}.o -c #{target_file}"
+    "g++ -Wall -O0 -DNDEBUG -std=c++14 -lbcm_host #{LIB_DIRS} #{INCLUDE_DIRS} -o #{build_path}.o -c #{target_file}"
   }
 }
-LINK_COMMAND     = 'clang++'
-LINK_FLAGS       = "-Wall -O0 -DNDEBUG -std=c++2a #{LIB_DIRS} #{INCLUDE_DIRS} -lbcm_host"
+LINK_COMMAND     = 'g++'
+#LINK_COMMAND     = '/home/vagrant/projects/raspi/tools/arm-bcm2708/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++'
+LINK_FLAGS       = "-Wall -O0 -DNDEBUG -std=c++14 #{LIB_DIRS} -Wl,-rpath-link=/opt/vc/lib -lbcm_host"
 
 task :default => ['build']
 
@@ -61,7 +62,7 @@ namespace :build do
       end
 
       target_files.each do |target|
-        basename = File.basename(target, "#{suffix}")
+        basename = File.basename(target, ".#{suffix}")
         sh command.call("#{OBJ_FILES_DIR}/#{basename}", target)
       end
     end
