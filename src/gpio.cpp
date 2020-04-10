@@ -20,6 +20,8 @@ Gpio::Gpio() {
     m_memoryFd,
     PeripheralAddr
   );
+
+  m_addr = (volatile unsigned int*)m_map;
 }
 
 Gpio::~Gpio() {
