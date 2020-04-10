@@ -37,8 +37,8 @@ int Gpio::set_pin(int pin, Gpio::FunctionSelect fsel) {
   }
 
   std::cout << "pin_num:" << pin << std::endl;
-  std::cout << "addr:" << m_addr + (pin/10) << std::endl;
-  std::cout << "val:" << (short)fsel << 3*(pin%10) << std::endl;
+  std::cout << "addr:" << std::hex << m_addr + (pin/10) << std::endl;
+  std::cout << "val:" << ((short)fsel << 3*(pin%10)) << std::endl;
   std::cout << "current_val:" << std::hex << *(m_addr + (pin/10)) << std::endl;
 
   *(m_addr + (pin/10)) = (short)fsel << 3*(pin%10);
