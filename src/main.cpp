@@ -12,7 +12,7 @@ int main(){
 
     short pin_val;
 
-    if(buff == "on"){
+    if(strcmp(buff, "on") == 0){
       gpio->set_pin(2, Gpio::FunctionSelect::IN);
     }
     else{
