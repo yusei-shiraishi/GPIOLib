@@ -10,8 +10,6 @@ int main(){
     char buff[256];
     scanf("%s", buff);
 
-    short pin_val;
-
     if(strcmp(buff, "on") == 0){
       gpio->set_pin(2, Gpio::FunctionSelect::IN);
     }
