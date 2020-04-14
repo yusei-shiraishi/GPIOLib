@@ -46,12 +46,12 @@ int Gpio::set_fsel(int pin, Gpio::FunctionSelect fsel) {
 }
 
 int Gpio::set_pin(int pin){
-  *(m_addr + OffsetGPSET0) = (1 << pin);
+  *(m_addr + OffsetGPSET0 + (pin / 32)) = (1 << (pin % 32));
   return 0;
 }
 
 int Gpio::clear_pin(int pin){
-  *(m_addr + OffsetGPCLR0) = (1 << pin);
+  *(m_addr + OffsetGPCLR0 + (pin / 32)) = (1 << pin);
   return 0;
 }
 
