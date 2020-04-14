@@ -19,7 +19,7 @@ Gpio::Gpio() {
     PROT_READ|PROT_WRITE,
     MAP_SHARED,
     m_memoryFd,
-    PeripheralAddr
+    PeripheralAddr + 0x00200000
   );
 
   m_addr = (volatile unsigned long*)m_map;
