@@ -22,7 +22,7 @@ class Gpio {
 
   private:
     static const int PeripheralAddr;
-    static const size_t PeripheralSize = 5;
+    static const size_t PeripheralSize = 4096;
 
     int m_memoryFd;
     void* m_map;
