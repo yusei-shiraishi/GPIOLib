@@ -46,12 +46,15 @@ int Gpio::set_fsel(int pin, Gpio::FunctionSelect fsel) {
 }
 
 int Gpio::set_pin(int pin){
-  *(m_addr + (OffsetGPSET0/4) + (pin / 32)) = (1 << (pin % 32));
+  //１つしかできないからなんとかしろ
+  std::cout << "val" << std::hex << (unsigned long)(1 << (pin % 32)) << std::endl;
+  *(m_addr + (OffsetGPSET0 / 4) + (pin / 32)) = (unsigned long)(1 << (pin % 32));
   return 0;
 }
 
 int Gpio::clear_pin(int pin){
-  *(m_addr + (OffsetGPCLR0/4) + (pin / 32)) = (1 << pin);
+  std::cout << "val" << std::hex << (unsigned long)(1 << (pin % 32)) << std::endl;
+  *(m_addr + (OffsetGPCLR0 / 4) + (pin / 32)) = (unsigned long)(1 << (pin % 32));
   return 0;
 }
 
@@ -64,7 +67,7 @@ bool Gpio::validate_pin(int pin){
 }
 
 bool Gpio::is_high(int pin){
-  long val = *(m_addr + (OffsetGPLEV0/4) + (pin / 32));
+  long val = *(m_addr + (OffsetGPLEV0 / 4) + (pin / 32));
   return (val & (1 << (pin % 32))) > 0;
 }
 
