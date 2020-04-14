@@ -19,7 +19,8 @@ Gpio::Gpio() {
     PROT_READ|PROT_WRITE,
     MAP_SHARED,
     m_memoryFd,
-    PeripheralAddr + OffsetGPIO
+    //PeripheralAddr + OffsetGPIO
+    PeripheralAddr + 0x00200000
   );
 
   if (m_map == MAP_FAILED) {
