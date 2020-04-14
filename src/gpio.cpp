@@ -40,18 +40,18 @@ int Gpio::set_fsel(int pin, Gpio::FunctionSelect fsel) {
     perror("gg");
   }
 
-  *(m_addr + (pin/10)) = ((int)fsel << 3*(pin%10));
+  *(m_addr + (pin / 10)) = ((int)fsel << 3*(pin % 10));
 
   return 0;
 }
 
 int Gpio::set_pin(int pin){
-  *(m_addr + OffsetGPSET0 + (pin / 32)) = (1 << (pin % 32));
+  *(m_addr + (OffsetGPSET0/4) + (pin / 32)) = (1 << (pin % 32));
   return 0;
 }
 
 int Gpio::clear_pin(int pin){
-  *(m_addr + OffsetGPCLR0 + (pin / 32)) = (1 << pin);
+  *(m_addr + (OffsetGPCLR0/4) + (pin / 32)) = (1 << pin);
   return 0;
 }
 
@@ -64,7 +64,7 @@ bool Gpio::validate_pin(int pin){
 }
 
 bool Gpio::is_high(int pin){
-  long val = *(m_addr + OffsetGPLEV0 + (pin / 32));
+  long val = *(m_addr + (OffsetGPLEV0/4) + (pin / 32));
   return (val & (1 << (pin % 32))) > 0;
 }
 
