@@ -12,7 +12,6 @@ int main(){
 
     if(strcmp(buff, "on") == 0){
       gpio->set_fsel(2, Gpio::FunctionSelect::IN);
-      gpio->set_pin(2);
     }
     else{
       gpio->set_fsel(2, Gpio::FunctionSelect::OUT);
