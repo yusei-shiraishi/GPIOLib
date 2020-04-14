@@ -36,6 +36,8 @@ class Gpio {
   private:
     static const int PeripheralAddr;
     static const size_t PeripheralSize = 4096;
+    static const size_t OffsetGPSET0 = 0x001C;
+    static const size_t OffsetGPCLR0 = 0x001C;
 
     int m_memoryFd;
     void* m_map;
