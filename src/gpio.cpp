@@ -13,6 +13,9 @@ Gpio::Gpio() {
 		return;
   }
 
+  std::cout << 0x00200000 << std::endl;
+  std::cout << OffsetGPIO << std::endl;
+
   m_map = mmap(
     NULL,
     PeripheralSize,
@@ -37,6 +40,7 @@ Gpio::~Gpio() {
 }
 
 int Gpio::set_fsel(int pin, Gpio::FunctionSelect fsel) {
+  //１つしかできないからなんとかしろ
   if (!validate_pin(pin)){
     perror("gg");
   }
@@ -47,15 +51,14 @@ int Gpio::set_fsel(int pin, Gpio::FunctionSelect fsel) {
 }
 
 int Gpio::set_pin(int pin){
-  //１つしかできないからなんとかしろ
   std::cout << "val" << std::hex << (unsigned long)(1 << (pin % 32)) << std::endl;
-  *(m_addr + (OffsetGPSET0 / 4) + (pin / 32)) = (unsigned long)(1 << (pin % 32));
+  *(m_addr + OffsetGPSET0 + (pin / 32)) = (unsigned long)(1 << (pin % 32));
   return 0;
 }
 
 int Gpio::clear_pin(int pin){
   std::cout << "val" << std::hex << (unsigned long)(1 << (pin % 32)) << std::endl;
-  *(m_addr + (OffsetGPCLR0 / 4) + (pin / 32)) = (unsigned long)(1 << (pin % 32));
+  *(m_addr + OffsetGPCLR0 + (pin / 32)) = (unsigned long)(1 << (pin % 32));
   return 0;
 }
 
