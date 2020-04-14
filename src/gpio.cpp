@@ -31,7 +31,7 @@ Gpio::~Gpio() {
   close(m_memoryFd);
 }
 
-int Gpio::set_pin(int pin, Gpio::FunctionSelect fsel) {
+int Gpio::set_fsel(int pin, Gpio::FunctionSelect fsel) {
   if (!validate_pin(pin)){
     perror("gg");
   }
@@ -52,14 +52,26 @@ int Gpio::set_pin(int pin, Gpio::FunctionSelect fsel) {
   return 0;
 }
 
-Gpio::FunctionSelect Gpio::get_pin(int pin) {
-  if (!validate_pin(pin)){
-    perror("gg");
-  }
-
-  return FunctionSelect::IN;
+int Gpio::set_pin(int pin){
+  return 0;
 }
 
-bool Gpio::validate_pin(int pin) {
-  return true;
+int Gpio::clear_pin(int pin){
+  return 0;
+}
+
+Gpio::Status* Gpio::get_status(int pin, Status* pStatus){
+  return nullptr;
+}
+
+bool Gpio::validate_pin(int pin){
+  return false;
+}
+
+bool Gpio::is_high(int pin){
+  return false;
+}
+
+Gpio::FunctionSelect Gpio::get_fsel(int pin){
+  FunctionSelect::OUT;
 }

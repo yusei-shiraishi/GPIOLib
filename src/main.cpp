@@ -11,10 +11,10 @@ int main(){
     scanf("%s", buff);
 
     if(strcmp(buff, "on") == 0){
-      gpio->set_pin(2, Gpio::FunctionSelect::IN);
+      gpio->set_fsel(2, Gpio::FunctionSelect::IN);
     }
     else{
-      gpio->set_pin(2, Gpio::FunctionSelect::OUT);
+      gpio->set_fsel(2, Gpio::FunctionSelect::OUT);
     }
   }
 
