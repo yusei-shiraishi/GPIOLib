@@ -52,13 +52,15 @@ int Gpio::set_fsel(int pin, Gpio::FunctionSelect fsel) {
 
 int Gpio::set_pin(int pin){
   std::cout << "val" << std::hex << (unsigned long)(1 << (pin % 32)) << std::endl;
-  *(m_addr + OffsetGPSET0 + (pin / 32)) = (unsigned long)(1 << (pin % 32));
+  std::cout << (OffsetGPSET0 / 4) + (pin / 32) << std::endl;
+  *(m_addr + (OffsetGPSET0 / 4) + (pin / 32)) = (unsigned long)(1 << (pin % 32));
   return 0;
 }
 
 int Gpio::clear_pin(int pin){
   std::cout << "val" << std::hex << (unsigned long)(1 << (pin % 32)) << std::endl;
-  *(m_addr + OffsetGPCLR0 + (pin / 32)) = (unsigned long)(1 << (pin % 32));
+  std::cout << (OffsetGPCLR0/4) + (pin / 32) << std::endl;
+  *(m_addr + (OffsetGPCLR0/4) + (pin / 32)) = (unsigned long)(1 << (pin % 32));
   return 0;
 }
 
