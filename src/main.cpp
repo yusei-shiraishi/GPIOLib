@@ -20,5 +20,7 @@ int main(){
     }
   }
 
+  delete gpio;
+
   return 0;
 }

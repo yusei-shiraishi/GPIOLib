@@ -16,21 +16,21 @@ Gpio::Gpio() {
   std::cout << 0x00200000 << std::endl;
   std::cout << OffsetGPIO << std::endl;
 
-  m_map = mmap(
-    NULL,
-    PeripheralSize,
-    PROT_READ|PROT_WRITE,
-    MAP_SHARED,
-    m_memoryFd,
-    //PeripheralAddr + OffsetGPIO
-    PeripheralAddr + 0x00200000
-  );
+  //m_map = mmap(
+  //  NULL,
+  //  PeripheralSize,
+  //  PROT_READ|PROT_WRITE,
+  //  MAP_SHARED,
+  //  m_memoryFd,
+  //  //PeripheralAddr + OffsetGPIO
+  //  PeripheralAddr + 0x00200000
+  //);
 
-  if (m_map == MAP_FAILED) {
-    perror("failed with mmap()\n");
-  }
+  //if (m_map == MAP_FAILED) {
+  //  perror("failed with mmap()\n");
+  //}
 
-  m_addr = (volatile unsigned long*)m_map;
+  //m_addr = (volatile unsigned long*)m_map;
 }
 
 Gpio::~Gpio() {
@@ -54,7 +54,23 @@ int Gpio::set_pin(int pin){
   std::cout << "val" << std::hex << (unsigned long)(1 << (pin % 32)) << std::endl;
   std::cout << (OffsetGPSET0 / 4) + (pin / 32) << std::endl;
   std::cout << (0x001C / 4) + (pin / 32) << std::endl;
-  *(m_addr + (0x001C / 4) + (pin / 32)) = (unsigned long)(1 << (pin % 32));
+  m_map = mmap(
+    NULL,
+    PeripheralSize,
+    PROT_READ|PROT_WRITE,
+    MAP_SHARED,
+    m_memoryFd,
+    //PeripheralAddr + OffsetGPIO
+    PeripheralAddr + 0x00200000 + 0x001C
+  );
+
+  if (m_map == MAP_FAILED) {
+    perror("failed with mmap()\n");
+  }
+
+  m_addr = (volatile unsigned long*)m_map;
+  *(m_addr) = (unsigned long)(1 << pin);
+  munmap(m_map, PeripheralSize);
   return 0;
 }
 
@@ -62,7 +78,22 @@ int Gpio::clear_pin(int pin){
   std::cout << "val" << std::hex << (unsigned long)(1 << (pin % 32)) << std::endl;
   std::cout << (OffsetGPCLR0/4) + (pin / 32) << std::endl;
   std::cout << (0x0028/4) + (pin / 32) << std::endl;
-  *(m_addr + (0x0028/4) + (pin / 32)) = (unsigned long)(1 << (pin % 32));
+  m_map = mmap(
+    NULL,
+    PeripheralSize,
+    PROT_READ|PROT_WRITE,
+    MAP_SHARED,
+    m_memoryFd,
+    //PeripheralAddr + OffsetGPIO
+    PeripheralAddr + 0x00200000 + 0x0028
+  );
+
+  if (m_map == MAP_FAILED) {
+    perror("failed with mmap()\n");
+  }
+  m_addr = (volatile unsigned long*)m_map;
+  *(m_addr) = (unsigned long)(1 << pin));
+  munmap(m_map, PeripheralSize);
   return 0;
 }
 
