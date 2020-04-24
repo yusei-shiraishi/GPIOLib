@@ -48,7 +48,7 @@ int Gpio::set_fsel(int pin, Gpio::FunctionSelect fsel) {
     perror("gg");
   }
 
-  *((volatile unsigned int*)(addr + GPFSEL0_OFFSET)) = (1 << pin);
+  *((volatile unsigned int*)(m_map + GPFSEL0_OFFSET)) = (1 << pin);
   //volatile unsigned long* addr = (volatile unsigned long*)(m_map);
   //*(addr + (pin / 10)) = ((int)fsel << 3*(pin % 10));
   //*(m_addr + (pin / 10)) = ((int)fsel << 3*(pin % 10));
@@ -75,8 +75,9 @@ bool Gpio::validate_pin(int pin){
 }
 
 bool Gpio::is_high(int pin){
-  long val = *(m_addr + (OffsetGPLEV0 / 4) + (pin / 32));
-  return (val & (1 << (pin % 32))) > 0;
+  //long val = *(m_addr + (OffsetGPLEV0 / 4) + (pin / 32));
+  return true;
+  //return (val & (1 << (pin % 32))) > 0;
 }
 
 Gpio::FunctionSelect Gpio::get_fsel(int pin){
