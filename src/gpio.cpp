@@ -4,6 +4,13 @@
 #include <sys/mman.h>
 #include <iostream>
 
+#define GPIO_OFFSET 0x00200000
+#define PAGE_SIZE 4096
+#define GPFSEL0_OFFSET 0x0000
+#define GPSET0_OFFSET 0x001C
+#define GPCLR0_OFFSET 0x0028
+#define GPLEV0_OFFSET 0x0034
+
 const int Gpio::PeripheralAddr = bcm_host_get_peripheral_address();
 
 Gpio::Gpio() {
@@ -13,9 +20,6 @@ Gpio::Gpio() {
 		return;
   }
 
-  std::cout << 0x00200000 << std::endl;
-  std::cout << OffsetGPIO << std::endl;
-
   m_map = mmap(
     NULL,
     PeripheralSize,
@@ -23,19 +27,18 @@ Gpio::Gpio() {
     MAP_SHARED,
     m_memoryFd,
     //PeripheralAddr + OffsetGPIO
-    PeripheralAddr + 0x00200000
+    PeripheralAddr + GPIO_OFFSET
   );
 
   if (m_map == MAP_FAILED) {
     perror("failed with mmap()\n");
+    close(m_memoryFd);
+    return;
   }
-
-  m_addr = (volatile unsigned long*)m_map;
 }
 
 Gpio::~Gpio() {
   munmap(m_map, PeripheralSize);
-  m_addr = nullptr;
   close(m_memoryFd);
 }
 
@@ -45,28 +48,21 @@ int Gpio::set_fsel(int pin, Gpio::FunctionSelect fsel) {
     perror("gg");
   }
 
+  *((volatile unsigned int*)(addr + GPFSEL0_OFFSET)) = (1 << pin);
   //volatile unsigned long* addr = (volatile unsigned long*)(m_map);
   //*(addr + (pin / 10)) = ((int)fsel << 3*(pin % 10));
-  *(m_addr + (pin / 10)) = ((int)fsel << 3*(pin % 10));
+  //*(m_addr + (pin / 10)) = ((int)fsel << 3*(pin % 10));
 
   return 0;
 }
 
 int Gpio::set_pin(int pin){
-  std::cout << "val" << std::hex << (unsigned long)(1 << (pin % 32)) << std::endl;
-  std::cout << (OffsetGPSET0 / 4) + (pin / 32) << std::endl;
-  std::cout << (0x001C / 4) + (pin / 32) << std::endl;
-
-  volatile unsigned long* addr = (volatile unsigned long*)(m_map + 0x001c);
-  *(addr) = (unsigned long)(1 << (pin-1));
+  *((volatile unsigned int*)(m_map + GPSET0_OFFSET)) = (1 << pin);
   return 0;
 }
 
 int Gpio::clear_pin(int pin){
-  std::cout << "val" << std::hex << (unsigned long)(1 << (pin % 32)) << std::endl;
-  std::cout << (OffsetGPCLR0/4) + (pin / 32) << std::endl;
-  std::cout << (0x0028/4) + (pin / 32) << std::endl;
-  *((volatile unsigned long*)(m_map + 0x0028)) = (unsigned long)(1 << (pin-1));
+  *((volatile unsigned long*)(m_map + GPCLR0_OFFSET)) = (1 << pin);
   return 0;
 }
 
