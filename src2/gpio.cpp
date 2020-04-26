@@ -24,7 +24,7 @@ Gpio::Gpio(){
   }
 
   m_addr = (unsigned int)mmap(NULL, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd, PERIPHERAL_ADDRESS + GPIO_OFFSET);
-  if (m_addr == MAP_FAILED) {
+  if ((void*)m_addr == MAP_FAILED) {
     perror("failed with mmap()\n");
     close(m_fd);
   }
