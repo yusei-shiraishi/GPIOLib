@@ -1,6 +1,6 @@
 #include <cstring>
 #include <cstdio>
-#include "gpio.h"
+#include "gpio.hpp"
 
 int main() {
   Gpio* g = new Gpio();

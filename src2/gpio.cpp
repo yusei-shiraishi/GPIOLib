@@ -1,4 +1,4 @@
-#include "gpio.h"
+#include "gpio.hpp"
 
 #include <bcm_host.h>
 #include <stdio.h>
