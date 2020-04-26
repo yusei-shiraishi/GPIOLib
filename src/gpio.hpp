@@ -38,7 +38,7 @@ class Gpio {
     static const int PeripheralSize = 4096;
 
     int m_memoryFd;
-    void* m_map;
+    unsigned int m_map;
 
     bool validate_pin(int pin);
     bool is_high(int pin);

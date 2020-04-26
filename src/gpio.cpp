@@ -20,7 +20,7 @@ Gpio::Gpio() {
 		return;
   }
 
-  m_map = mmap(
+  m_map = (unsigned int)mmap(
     NULL,
     PeripheralSize,
     PROT_READ|PROT_WRITE,
@@ -38,7 +38,7 @@ Gpio::Gpio() {
 }
 
 Gpio::~Gpio() {
-  munmap(m_map, PeripheralSize);
+  munmap((void*)m_map, PeripheralSize);
   close(m_memoryFd);
 }
 
