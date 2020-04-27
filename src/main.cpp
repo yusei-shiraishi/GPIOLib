@@ -1,9 +1,10 @@
-#include <stdio.h>
+#include <cstring>
+#include <cstdio>
 #include "gpio.hpp"
 
-int main(){
-  Gpio* gpio = new Gpio();
-
+int main() {
+  Gpio* g = new Gpio();
+  g->set_fsel(2, Gpio::FunctionSelect::OUT);
   while(true){
     printf("pls typing on or off\n");
 
@@ -11,16 +12,13 @@ int main(){
     scanf("%s", buff);
 
     if(strcmp(buff, "on") == 0){
-      gpio->set_pin(2);
-      //gpio->set_fsel(2, Gpio::FunctionSelect::IN);
+      g->set_pin(2);
     }
     else{
-      gpio->clear_pin(2);
-      //gpio->set_fsel(2, Gpio::FunctionSelect::OUT);
+      g->clear_pin(2);
     }
   }
-
-  delete gpio;
+  delete g;
 
   return 0;
 }
