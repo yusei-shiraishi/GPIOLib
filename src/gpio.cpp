@@ -40,7 +40,7 @@ int Gpio::set_fsel(int pin, Gpio::FunctionSelect fsel) {
     perror("gg");
   }
 
-  (*((volatile unsigned int*)((m_addr + GPFSEL0_OFFSET)))) = ((int)fsel << 3*pin);
+  *( (volatile unsigned int*)(m_addr + GPFSEL0_OFFSET) + (pin / 10) ) = ((int)fsel << 3*(pin % 10));
   return 0;
 }
 
@@ -49,7 +49,7 @@ int Gpio::set_pin(int pin){
     perror("gg");
   }
 
-  (*((volatile unsigned int*)((m_addr + GPSET0_OFFSET)))) = (1 << pin);
+  *((volatile unsigned int*)(m_addr + GPSET0_OFFSET) + (pin / 32)) = (1 << (pin%32));
   return 0;
 }
 
@@ -58,7 +58,7 @@ int Gpio::clear_pin(int pin){
     perror("gg");
   }
 
-  (*((volatile unsigned int*)((m_addr + GPCLR0_OFFSET)))) = (1 << pin);
+  *((volatile unsigned int*)(m_addr + GPCLR0_OFFSET) + (pin / 32)) = (1 << (pin%32));
   return 0;
 }
 
