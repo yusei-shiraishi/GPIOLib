@@ -17,6 +17,7 @@ public:
   int set_pin(int pin);
   int clear_pin(int pin);
 
+  FunctionSelect get_fsel(int pin);
 private:
 	static const int PERIPHERAL_ADDRESS;
   static const int PAGE_SIZE = 256;
@@ -26,7 +27,6 @@ private:
 
   bool validate_pin(int pin);
   bool is_high(int pin);
-  FunctionSelect get_fsel(int pin);
 };
 
 #endif
