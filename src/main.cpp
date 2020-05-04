@@ -41,13 +41,14 @@ int main() {
   bool state = g->is_high(20);
   if   (state) printf("current:high/n");
   else         printf("current:low/n");
- 
+
   while(true){
     if(state != g->is_high(20)){
       if   (state) printf("current:high/n");
       else         printf("current:low/n");
     }
     state = g->is_high(20);
+    usleep(1000);
   }
   delete g;
 
