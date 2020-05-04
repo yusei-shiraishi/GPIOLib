@@ -2,20 +2,20 @@ PROJECT_HOME      = File.expand_path(File.dirname(__FILE__))
 PROJECT_NAME      = "smart_home"
 SRC_DIR           = "#{PROJECT_HOME}/src"
 BUILD_DIR         = "#{PROJECT_HOME}/build"
-EXE_FILE_DIR      = "#{BUILD_DIR}/exe"
+SO_FILE_DIR      = "#{BUILD_DIR}/lib"
 OBJ_FILES_DIR     = "#{BUILD_DIR}/objects"
-EXE_FILE_PATH     = "#{EXE_FILE_DIR}/#{PROJECT_NAME}"
-INCLUDE_DIRS      = %w(/usr/local/boost_1_72_0/ /opt/vc/include).map{|i_dir| "-I#{i_dir}"}.join(' ')
-LIB_DIRS          = %w(/opt/vc/lib).map{|l_dir| "-L#{l_dir}"}.join(' ')
+SO_FILE_PATH     = "#{SO_FILE_DIR}/#{PROJECT_NAME}"
+INCLUDE_DIRS      = %w(/opt/vc/include)
+INCLUDE_OPTION    = INCLUDE_DIRS.map{|i_dir| "-I#{i_dir}"}.join(' ')
+LIB_DIRS          = %w(/opt/vc/lib)
+LIB_OPTIONS       = LIB_DIRS.map{|l_dir| "-L#{l_dir}"}.join(' ')
 COMPILE_COMMANDS   = {
   cpp: ->(build_path, target_file) {
-    #"/home/vagrant/projects/raspi/tools/arm-bcm2708/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -Wall -O0 -DNDEBUG -std=c++14 -lbcm_host #{INCLUDE_DIRS} -o #{build_path}.o -c #{target_file}"
-    "g++ -g -Wall -O0 -DNDEBUG -std=c++14 -lbcm_host #{LIB_DIRS} #{INCLUDE_DIRS} -o #{build_path}.o -c #{target_file}"
+    "g++ -Wall -O0 -DNDEBUG -std=c++14 -lbcm_host #{LIB_OPTIONS} #{INCLUDE_OPTION} -o #{build_path}.o -c #{target_file}"
   }
 }
 LINK_COMMAND     = 'g++'
-#LINK_COMMAND     = '/home/vagrant/projects/raspi/tools/arm-bcm2708/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++'
-LINK_FLAGS       = "-g -Wall -O0 -DNDEBUG -std=c++14 #{LIB_DIRS} -Wl,-rpath-link=/opt/vc/lib -lbcm_host"
+LINK_FLAGS       = "-shared -Wall -O0 -DNDEBUG -std=c++14 #{LIB_OPTIONS} -Wl,-rpath-link=#{LIB_DIRS} -lbcm_host"
 
 task :default => ['build']
 
@@ -39,7 +39,7 @@ def get_match_files_recursion(path, &block)
   return files
 end
 
-desc "build exe file to all"
+desc "build to all"
 task :build do |task, args|
   Rake::Task['build:clean'].execute
   Rake::Task['build:compile'].execute(args)
@@ -70,9 +70,9 @@ namespace :build do
 
   desc "link"
   task :link do
-    FileUtils.mkdir_p(EXE_FILE_DIR) unless Dir.exists?(EXE_FILE_DIR)
+    FileUtils.mkdir_p(SO_FILE_DIR) unless Dir.exists?(SO_FILE_DIR)
     obj_files = get_match_files_recursion(OBJ_FILES_DIR){|f| File.fnmatch("*.o", f)}.join(' ')
-    sh "#{LINK_COMMAND} #{LINK_FLAGS} -o #{EXE_FILE_PATH} #{obj_files}"
+    sh "#{LINK_COMMAND} #{LINK_FLAGS} -o #{SO_FILE_PATH} #{obj_files}"
   end
 
   desc "rm build dir"

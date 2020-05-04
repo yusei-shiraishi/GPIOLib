@@ -1,4 +1,4 @@
-#include "gpio.hpp"
+#include "../include/gpio.hpp"
 
 #include <bcm_host.h>
 #include <stdio.h>
@@ -21,6 +21,7 @@ const int Gpio::PERIPHERAL_ADDRESS = bcm_host_get_peripheral_address();
 Gpio::Gpio(){
   if ((m_fd = open("/dev/mem", O_RDWR | O_SYNC)) < 0) {
     perror("failed to open()\n");
+    return;
   }
 
   m_addr = (unsigned int)mmap(NULL, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd, PERIPHERAL_ADDRESS + GPIO_OFFSET);
@@ -35,9 +36,10 @@ Gpio::~Gpio(){
   close(m_fd);
 }
 
-int Gpio::set_fsel(int pin, Gpio::FunctionSelect fsel) {
+int Gpio::set_fsel(unsigned int pin, Gpio::FunctionSelect fsel) {
   if (!validate_pin(pin)){
-    perror("gg");
+    perror("argumnet error");
+    return 1;
   }
 
   volatile unsigned int* addr = ((volatile unsigned int*)(m_addr + GPFSEL0_OFFSET) + (pin / 10));
@@ -49,9 +51,10 @@ int Gpio::set_fsel(int pin, Gpio::FunctionSelect fsel) {
   return 0;
 }
 
-int Gpio::set_pin(int pin){
+int Gpio::set_pin(unsigned int pin){
   if (!validate_pin(pin)){
-    perror("gg");
+    perror("argumnet error");
+    return 1;
   }
 
   volatile unsigned int* addr = ((volatile unsigned int*)(m_addr + GPSET0_OFFSET) + (pin / 32));
@@ -59,9 +62,10 @@ int Gpio::set_pin(int pin){
   return 0;
 }
 
-int Gpio::clear_pin(int pin){
+int Gpio::clear_pin(unsigned int pin){
   if (!validate_pin(pin)){
-    perror("gg");
+    perror("argumnet error");
+    return 1;
   }
 
   volatile unsigned int* addr = ((volatile unsigned int*)(m_addr + GPCLR0_OFFSET) + (pin / 32));
@@ -69,13 +73,15 @@ int Gpio::clear_pin(int pin){
   return 0;
 }
 
-bool Gpio::validate_pin(int pin){
+bool Gpio::validate_pin(unsigned int pin){
+  if(pin > 53) return false;
   return true;
 }
 
-bool Gpio::is_high(int pin){
+bool Gpio::is_high(unsigned int pin){
   if (!validate_pin(pin)){
-    perror("gg");
+    perror("argumnet error");
+    return 1;
   }
 
   volatile unsigned int* addr = ((volatile unsigned int*)(m_addr + GPLEV0_OFFSET) + (pin / 32));
@@ -83,9 +89,10 @@ bool Gpio::is_high(int pin){
   return (bool)(*addr & (1 << offset));
 }
 
-Gpio::FunctionSelect Gpio::get_fsel(int pin){
+Gpio::FunctionSelect Gpio::get_fsel(unsigned int pin){
   if (!validate_pin(pin)){
-    perror("gg");
+    perror("argumnet error");
+    return 1;
   }
 
   volatile unsigned int* addr = ((volatile unsigned int*)(m_addr + GPFSEL0_OFFSET) + (pin / 10));
