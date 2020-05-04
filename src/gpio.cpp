@@ -79,8 +79,8 @@ bool Gpio::is_high(int pin){
   }
 
   volatile unsigned int* addr = ((volatile unsigned int*)(m_addr + GPLEV0_OFFSET) + (pin / 32));
-  int offset = 3*(pin % 32);
-  return (bool)((*addr & (0b111 << offset)) >> offset);
+  int offset = pin % 32;
+  return (bool)(*addr & (1 << offset));
 }
 
 Gpio::FunctionSelect Gpio::get_fsel(int pin){

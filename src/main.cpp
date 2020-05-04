@@ -6,6 +6,7 @@
 int main() {
   Gpio* g = new Gpio();
   while(true){
+    if(g->is_high(2)) printf("2-high\n");
     printf("pls typing on or off\n");
 
     char buff[256];
