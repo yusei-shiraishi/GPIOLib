@@ -41,7 +41,11 @@ int Gpio::set_fsel(int pin, Gpio::FunctionSelect fsel) {
   }
 
   volatile unsigned int* addr = ((volatile unsigned int*)(m_addr + GPFSEL0_OFFSET) + (pin / 10));
-  *addr = (*addr | ((int)fsel << 3*(pin % 10)));
+  int offset = 3*(pin % 10);
+  unsigned int high_part = ((*addr >> (offset+3)) << (offset+3));
+  unsigned int target_part = (int)fsel << offset;
+  unsigned int low_part = (((1 << offset) - 1) & *addr);
+  *addr = high_part | target_part | low_part;
   return 0;
 }
 
