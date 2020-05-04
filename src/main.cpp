@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include <vector>
+#include <cstdlib>
 #include "gpio.hpp"
 
 int main() {
@@ -18,22 +19,35 @@ int main() {
   //    g->set_pin(21);
   //  }
   //  else{
-  //    g->clear_pin(2);
+  //    g->clear_pin(2);jjj
   //    g->clear_pin(21);
   //  }
   //}
-  std::vector<bool> states(256, false);
-  g->set_fsel(20, GPIO::FunctionSelect::IN);
-  while(true){
-    states[255] = g->is_high(20);
 
-    //print
-    std::system("cls");
-    for(auto ite = states.begin(); ite != states.end(); ++i){
-      if(*ite) printf("-");
-      else     printf("_");
+  //std::vector<bool> states(128, false);
+  g->set_fsel(20, Gpio::FunctionSelect::IN);
+  //while(true){
+  //  states[255] = g->is_high(20);
+
+  //  //print
+  //  for(auto ite = states.begin(); ite != states.end(); ++ite){
+  //    if(*ite) printf("-");
+  //    else     printf("_");
+  //  }
+  //  printf("\n");
+  //  usleep(1000);
+  //}
+
+  bool state = g->is_high(20);
+  if   (state) printf("current:high/n");
+  else         printf("current:low/n");
+ 
+  while(true){
+    if(state != g->is_high(20)){
+      if   (state) printf("current:high/n");
+      else         printf("current:low/n");
     }
-    printf("\n");
+    state = g->is_high(20);
   }
   delete g;
 
