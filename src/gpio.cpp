@@ -65,11 +65,6 @@ void Gpio::clear_pin(unsigned int pin){
   return;
 }
 
-bool Gpio::validate_pin(unsigned int pin){
-  if(pin > 53) return false;
-  return true;
-}
-
 bool Gpio::is_high(unsigned int pin){
   if (!validate_pin(pin)) throw invalid_argument("argument error");
 
@@ -85,3 +80,9 @@ Gpio::FunctionSelect Gpio::get_fsel(unsigned int pin){
   int offset = 3*(pin % 10);
   return (FunctionSelect)((*addr & (0b111 << offset)) >> offset);
 }
+
+bool Gpio::validate_pin(unsigned int pin){
+  if(pin > 53) return false;
+  return true;
+}
+

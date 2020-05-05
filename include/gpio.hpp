@@ -26,7 +26,7 @@ private:
   int m_fd;
   unsigned int m_addr;
 
-  bool validate_pin(int pin);
+  bool validate_pin(unsigned int pin);
 };
 
 #endif
