@@ -16,18 +16,21 @@
 
 #define DEVICE_FILE "/dev/mem"
 
+using std;
+
 const int Gpio::PERIPHERAL_ADDRESS = bcm_host_get_peripheral_address();
 
 Gpio::Gpio(){
-  if ((m_fd = open("/dev/mem", O_RDWR | O_SYNC)) < 0) {
-    perror("failed to open()\n");
-    return;
+  if ((m_fd = open(DEVICE_FILE, O_RDWR | O_SYNC)) < 0) {
+    perror("failed to open DEVICE_FILE");
+    throw system_error("failed to open DEVICE_FILE");
   }
 
   m_addr = (unsigned int)mmap(NULL, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd, PERIPHERAL_ADDRESS + GPIO_OFFSET);
   if ((void*)m_addr == MAP_FAILED) {
-    perror("failed with mmap()\n");
+    perror("failed with mmap");
     close(m_fd);
+    throw system_error("failed with mmap");
   }
 }
 
@@ -36,11 +39,8 @@ Gpio::~Gpio(){
   close(m_fd);
 }
 
-int Gpio::set_fsel(unsigned int pin, Gpio::FunctionSelect fsel) {
-  if (!validate_pin(pin)){
-    perror("argumnet error");
-    return 1;
-  }
+void Gpio::set_fsel(unsigned int pin, Gpio::FunctionSelect fsel) {
+  if (!validate_pin(pin)) throw invalid_argument("argument error");
 
   volatile unsigned int* addr = ((volatile unsigned int*)(m_addr + GPFSEL0_OFFSET) + (pin / 10));
   int offset = 3*(pin % 10);
@@ -48,29 +48,21 @@ int Gpio::set_fsel(unsigned int pin, Gpio::FunctionSelect fsel) {
   unsigned int target_part = (int)fsel << offset;
   unsigned int low_part = (((1 << offset) - 1) & *addr);
   *addr = high_part | target_part | low_part;
-  return 0;
 }
 
-int Gpio::set_pin(unsigned int pin){
-  if (!validate_pin(pin)){
-    perror("argumnet error");
-    return 1;
-  }
+void Gpio::set_pin(unsigned int pin){
+  if (!validate_pin(pin)) throw invalid_argument("argument error");
 
   volatile unsigned int* addr = ((volatile unsigned int*)(m_addr + GPSET0_OFFSET) + (pin / 32));
   *addr = (*addr | (1 << (pin % 32)));
-  return 0;
 }
 
-int Gpio::clear_pin(unsigned int pin){
-  if (!validate_pin(pin)){
-    perror("argumnet error");
-    return 1;
-  }
+void Gpio::clear_pin(unsigned int pin){
+  if (!validate_pin(pin)) throw invalid_argument("argument error");
 
   volatile unsigned int* addr = ((volatile unsigned int*)(m_addr + GPCLR0_OFFSET) + (pin / 32));
   *addr = (*addr | (1 << (pin%32)));
-  return 0;
+  return;
 }
 
 bool Gpio::validate_pin(unsigned int pin){
@@ -79,10 +71,7 @@ bool Gpio::validate_pin(unsigned int pin){
 }
 
 bool Gpio::is_high(unsigned int pin){
-  if (!validate_pin(pin)){
-    perror("argumnet error");
-    return 1;
-  }
+  if (!validate_pin(pin)) throw invalid_argument("argument error");
 
   volatile unsigned int* addr = ((volatile unsigned int*)(m_addr + GPLEV0_OFFSET) + (pin / 32));
   int offset = pin % 32;
@@ -90,10 +79,7 @@ bool Gpio::is_high(unsigned int pin){
 }
 
 Gpio::FunctionSelect Gpio::get_fsel(unsigned int pin){
-  if (!validate_pin(pin)){
-    perror("argumnet error");
-    return 1;
-  }
+  if (!validate_pin(pin)) throw invalid_argument("argument error");
 
   volatile unsigned int* addr = ((volatile unsigned int*)(m_addr + GPFSEL0_OFFSET) + (pin / 10));
   int offset = 3*(pin % 10);

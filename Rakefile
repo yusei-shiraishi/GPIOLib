@@ -1,10 +1,10 @@
 PROJECT_HOME      = File.expand_path(File.dirname(__FILE__))
-PROJECT_NAME      = "smart_home"
+PROJECT_NAME      = "gpiolib"
 SRC_DIR           = "#{PROJECT_HOME}/src"
-BUILD_DIR         = "#{PROJECT_HOME}/build"
-SO_FILE_DIR      = "#{BUILD_DIR}/lib"
-OBJ_FILES_DIR     = "#{BUILD_DIR}/objects"
+SO_FILE_DIR      = "#{PROJECT_HOME}/lib"
 SO_FILE_PATH     = "#{SO_FILE_DIR}/#{PROJECT_NAME}"
+BUILD_DIR         = "#{PROJECT_HOME}/build"
+OBJ_FILES_DIR     = "#{BUILD_DIR}/objects"
 INCLUDE_DIRS      = %w(/opt/vc/include)
 INCLUDE_OPTION    = INCLUDE_DIRS.map{|i_dir| "-I#{i_dir}"}.join(' ')
 LIB_DIRS          = %w(/opt/vc/lib)
