@@ -1,12 +1,10 @@
 #include "../include/gpio.hpp"
-
-#include <bcm_host.h>
-#include <stdio.h>
-#include <errno.h>
-#include <fcntl.h>
+#include <stdexcept>
 #include <cstdio>
-#include <sys/mman.h>
+#include <bcm_host.h>
+#include <fcntl.h>
 #include <unistd.h>
+#include <sys/mman.h>
 
 #define GPIO_OFFSET 0x00200000
 #define GPFSEL0_OFFSET 0x0000
@@ -16,21 +14,19 @@
 
 #define DEVICE_FILE "/dev/mem"
 
-using std;
+using namespace std;
 
 const int Gpio::PERIPHERAL_ADDRESS = bcm_host_get_peripheral_address();
 
 Gpio::Gpio(){
   if ((m_fd = open(DEVICE_FILE, O_RDWR | O_SYNC)) < 0) {
-    perror("failed to open DEVICE_FILE");
-    throw system_error("failed to open DEVICE_FILE");
+    throw runtime_error("failed to open DEVICE_FILE");
   }
 
   m_addr = (unsigned int)mmap(NULL, PAGE_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, m_fd, PERIPHERAL_ADDRESS + GPIO_OFFSET);
   if ((void*)m_addr == MAP_FAILED) {
-    perror("failed with mmap");
     close(m_fd);
-    throw system_error("failed with mmap");
+    throw runtime_error("failed with mmap");
   }
 }
 
@@ -62,7 +58,6 @@ void Gpio::clear_pin(unsigned int pin){
 
   volatile unsigned int* addr = ((volatile unsigned int*)(m_addr + GPCLR0_OFFSET) + (pin / 32));
   *addr = (*addr | (1 << (pin%32)));
-  return;
 }
 
 bool Gpio::is_high(unsigned int pin){
@@ -85,4 +80,3 @@ bool Gpio::validate_pin(unsigned int pin){
   if(pin > 53) return false;
   return true;
 }
-
