@@ -1,8 +1,8 @@
 PROJECT_HOME      = File.expand_path(File.dirname(__FILE__))
-PROJECT_NAME      = "gpiolib"
+PROJECT_NAME      = "libgpio"
 SRC_DIR           = "#{PROJECT_HOME}/src"
-SO_FILE_DIR      = "#{PROJECT_HOME}/lib"
-SO_FILE_PATH     = "#{SO_FILE_DIR}/#{PROJECT_NAME}"
+SO_FILE_DIR       = "#{PROJECT_HOME}/lib"
+SO_FILE           = "#{SO_FILE_DIR}/#{PROJECT_NAME}"
 BUILD_DIR         = "#{PROJECT_HOME}/build"
 OBJ_FILES_DIR     = "#{BUILD_DIR}/objects"
 INCLUDE_DIRS      = %w(/opt/vc/include)
@@ -10,12 +10,15 @@ INCLUDE_OPTION    = INCLUDE_DIRS.map{|i_dir| "-I#{i_dir}"}.join(' ')
 LIB_DIRS          = %w(/opt/vc/lib)
 LIB_OPTIONS       = LIB_DIRS.map{|l_dir| "-L#{l_dir}"}.join(' ')
 COMPILE_COMMANDS   = {
-  cpp: ->(build_path, target_file) {
-    "g++ -Wall -O0 -DNDEBUG -std=c++14 -lbcm_host #{LIB_OPTIONS} #{INCLUDE_OPTION} -o #{build_path}.o -c #{target_file}"
+  cpp: ->(build_file, src) {
+    #"/home/vagrant/projects/raspi/tools/arm-bcm2708/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -Wall -O0 -DNDEBUG -std=c++14 -lbcm_host #{LIB_OPTIONS} #{INCLUDE_OPTION} -o #{build_file}.o -c #{src}"
+    "g++ -Wall -O0 -DNDEBUG -std=c++14 -lbcm_host #{LIB_OPTIONS} #{INCLUDE_OPTION} -o #{build_file}.o -c #{src}"
   }
 }
-LINK_COMMAND     = 'g++'
-LINK_FLAGS       = "-shared -Wall -O0 -DNDEBUG -std=c++14 #{LIB_OPTIONS} -Wl,-rpath-link=#{LIB_DIRS} -lbcm_host"
+LINK_COMMAND     = ->(so_file, obj_files) {
+  #"/home/vagrant/projects/raspi/tools/arm-bcm2708/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -shared -Wall -O0 -DNDEBUG -std=c++14 #{LIB_OPTIONS} -Wl,-rpath-link=#{LIB_DIRS} -lbcm_host -o #{so_file} #{obj_files}"
+  "g++ -shared -Wall -O0 -DNDEBUG -std=c++14 #{LIB_OPTIONS} -Wl,-rpath-link=#{LIB_DIRS} -lbcm_host -o #{so_file}.so #{obj_files}"
+}
 
 task :default => ['build']
 
@@ -72,7 +75,7 @@ namespace :build do
   task :link do
     FileUtils.mkdir_p(SO_FILE_DIR) unless Dir.exists?(SO_FILE_DIR)
     obj_files = get_match_files_recursion(OBJ_FILES_DIR){|f| File.fnmatch("*.o", f)}.join(' ')
-    sh "#{LINK_COMMAND} #{LINK_FLAGS} -o #{SO_FILE_PATH} #{obj_files}"
+    sh LINK_COMMAND.call(SO_FILE, obj_files)
   end
 
   desc "rm build dir"
