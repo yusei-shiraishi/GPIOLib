@@ -12,12 +12,12 @@ LIB_OPTIONS       = LIB_DIRS.map{|l_dir| "-L#{l_dir}"}.join(' ')
 COMPILE_COMMANDS   = {
   cpp: ->(build_file, src) {
     #"/home/vagrant/projects/raspi/tools/arm-bcm2708/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -Wall -O0 -DNDEBUG -std=c++14 -lbcm_host #{LIB_OPTIONS} #{INCLUDE_OPTION} -o #{build_file}.o -c #{src}"
-    "g++ -Wall -O0 -DNDEBUG -std=c++14 -lbcm_host #{LIB_OPTIONS} #{INCLUDE_OPTION} -o #{build_file}.o -c #{src}"
+    "arm-linux-gnueabihf-g++ -Wall -O0 -DNDEBUG -std=c++14 -lbcm_host #{LIB_OPTIONS} #{INCLUDE_OPTION} -o #{build_file}.o -c #{src}"
   }
 }
 LINK_COMMAND     = ->(so_file, obj_files) {
-  #"/home/vagrant/projects/raspi/tools/arm-bcm2708/arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++ -shared -Wall -O0 -DNDEBUG -std=c++14 #{LIB_OPTIONS} -Wl,-rpath-link=#{LIB_DIRS} -lbcm_host -o #{so_file} #{obj_files}"
-  "g++ -shared -Wall -O0 -DNDEBUG -std=c++14 #{LIB_OPTIONS} -Wl,-rpath-link=#{LIB_DIRS} -lbcm_host -o #{so_file}.so #{obj_files}"
+  #"g++ -shared -Wall -O0 -DNDEBUG -std=c++14 #{LIB_OPTIONS} -Wl,-rpath-link=#{LIB_DIRS} -lbcm_host -o #{so_file}.so #{obj_files}"
+  "arm-linux-gnueabihf-g++ -shared -Wall -O0 -DNDEBUG -std=c++14 #{LIB_OPTIONS} -Wl,-rpath-link=#{LIB_DIRS} -lbcm_host -o #{so_file}.so #{obj_files}"
 }
 
 task :default => ['build']
