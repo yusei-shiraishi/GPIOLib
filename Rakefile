@@ -1,6 +1,7 @@
 PROJECT_HOME      = File.expand_path(File.dirname(__FILE__))
 PROJECT_NAME      = "libgpio"
 SRC_DIR           = "#{PROJECT_HOME}/src"
+HPP_DIRS_DIR      = "#{PROJECT_HOME}/include"
 SO_FILE_DIR       = "#{PROJECT_HOME}/lib"
 SO_FILE           = "#{SO_FILE_DIR}/#{PROJECT_NAME}"
 BUILD_DIR         = "#{PROJECT_HOME}/build"
@@ -82,4 +83,13 @@ namespace :build do
   task :clean do
     sh "rm -r #{BUILD_DIR}" if Dir.exists?(BUILD_DIR)
   end
+end
+
+desc "install"
+task :install do |task, args|
+  prefix = args['prefix'] || '/usr/local/'
+  FileUtils.mkdir_p("#{prefix}include/#{PROJECT_NAME}") unless Dir.exists?("#{prefix}include/#{PROJECT_NAME}")
+  FileUtils.mkdir_p("#{prefix}lib/#{PROJECT_NAME}")     unless Dir.exists?("#{prefix}lib/#{PROJECT_NAME}")
+  sh "cp #{HPP_DIRS_DIR}/* #{prefix}include/#{PROJECT_NAME}/"
+  sh "cp #{SO_FILE_DIR}/*  #{prefix}lib/#{PROJECT_NAME}/"
 end
